@@ -1,0 +1,100 @@
+@startuml
+!define primary_key(x) <b><color:#b8861b><&key></color> x</b>
+!define foreign_key(x) <color:#aaaaaa><&key></color> x
+!define column(x) <color:#efefef><&media-record></color> x
+!define table(x) entity x << (T, white) >>
+left to right direction
+
+entity "Global Knowledge Graph" as gkg
+entity "Events" as events
+entity "Mentions" as mentions
+
+gkg ||-right-|{ events
+events ||--|{ mentions
+
+note "Tables are truncated" as N1
+
+
+/' gkg'/
+/' GKGRECORDID	DATE	SourceCollectionIdentifier	SourceCommonName
+' DocumentIdentifier	Counts	V2Counts	Themes	V2Themes
+' Locations	V2Locations	Persons	V2Persons	Organizations
+' V2Organizations	V2Tone	Dates	GCAM	SharingImage	RelatedImages
+' SocialImageEmbeds	SocialVideoEmbeds	Quotations	AllNames
+' Amounts	TranslationInfo	Extras '/
+
+/' gkg'/
+/' GKGRECORDID	DATE	SourceCollectionIdentifier	SourceCommonName
+' DocumentIdentifier	Counts	Themes
+' Locations	Persons	Organizations
+' V2Organizations	V2Tone	Dates	GCAM	SharingImage	RelatedImages
+' SocialImageEmbeds	SocialVideoEmbeds	Quotations	AllNames
+' Amounts	TranslationInfo	Extras '/
+
+/' GLOBALEVENTID	SQLDATE	MonthYear	Year	FractionDate
+' Actor1Code	Actor1Name	Actor1CountryCode	Actor1KnownGroupCode
+' Actor1EthnicCode	Actor1Religion1Code	Actor1Religion2Code
+' Actor1Type1Code	Actor1Type2Code	Actor1Type3Code	Actor2Code
+' Actor2Name	Actor2CountryCode	Actor2KnownGroupCode	Actor2EthnicCode
+' Actor2Religion1Code	Actor2Religion2Code	Actor2Type1Code	Actor2Type2Code
+' Actor2Type3Code	IsRootEvent	EventCode	EventBaseCode
+' EventRootCode	QuadClass	GoldsteinScale	NumMentions	NumSources
+' NumArticles	AvgTone	Actor1Geo_Type	Actor1Geo_FullName
+' Actor1Geo_CountryCode	Actor1Geo_ADM1Code	Actor1Geo_ADM2Code
+' Actor1Geo_Lat	Actor1Geo_Long	Actor1Geo_FeatureID	Actor2Geo_Type
+' Actor2Geo_FullName	Actor2Geo_CountryCode	Actor2Geo_ADM1Code
+' Actor2Geo_ADM2Code	Actor2Geo_Lat	Actor2Geo_Long	Actor2Geo_FeatureID
+' ActionGeo_Type	ActionGeo_FullName	ActionGeo_CountryCode
+' ActionGeo_ADM1Code	ActionGeo_ADM2Code	ActionGeo_Lat	ActionGeo_Long
+' ActionGeo_FeatureID	DATEADDED	SOURCEURL '/
+
+/' Mentions '/
+/' GLOBALEVENTID	EventTimeDate	MentionTimeDate	MentionType	MentionSourceName	MentionIdentifier	SentenceID	Actor1CharOffset	Actor2CharOffset	ActionCharOffset	InRawText	Confidence	MentionDocLen	MentionDocTone	MentionDocTranslationInfo	Extras '/
+
+
+table(gkg) {
+primary_key(GKG ID)
+column(Date)
+column(Themes)
+column(GCAM)
+column(AllNames)
+column(Translation Info)
+column(Document Identifier)
+column(Tone)
+...
+}
+
+/' Name, group, ethnicity, religion, Geo location (long, lat, name),  '/
+/' EventCode, GoldsteinScale, AvgTone, '/
+
+table(events) {
+primary_key(Event ID)
+column(Actor1)
+column(Actor2)
+column(Event)
+column(Date Added)
+column(GoldsteinScale)
+column(Source URL)
+column(Tone)
+...
+}
+
+note bottom
+    Contains more info about actors and events:
+    actor's group, ethnicity and religion
+    actor's and action's CAMEO codes and geo location(longitude, latitude, name)
+end note
+
+
+table(mentions) {
+foreign_key(GLOBALEVENTID) <<FK>>
+column(Mention Source Name)
+column(Mention Identifier)
+column(Confidence)
+column(Doc Tone)
+column(Doc Translation Info)
+...
+}
+
+
+@enduml

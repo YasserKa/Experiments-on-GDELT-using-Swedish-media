@@ -1,0 +1,8 @@
+@startuml
+left to right direction
+:Actor1: as actor1
+:Actor2: as actor2
+
+actor1 "0..1" --> (action)
+(action) --> "0..1" actor2
+@enduml
